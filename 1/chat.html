@@ -1,0 +1,342 @@
+<!--
+/*
+ * Created: 2015-11-03 23:15:19 GMT+9
+ *  Author: 이지찬 / Jichan Lee ( jic5760@naver.com / ablog.jc-lab.net )
+ * License: Creative Commons License 2.0 - BY NC
+ *          저작자표시시 비상업적 이용, 자유로운 수정 및 배포가 가능합니다.
+ */
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>카카오톡 채팅방 구현</title>
+<style>
+.jstalktheme
+{
+	background-color: #9bbad8;
+	padding: 4px 4px 0px 4px;
+}
+
+.jstalktheme .clear
+{
+	clear: both;
+}
+
+.jstalktheme .blank
+{
+	clear: both;
+	height: 4px;
+}
+
+.jstalktheme .msg
+{
+	height: calc(100% - 72px);
+	overflow-y: scroll;
+	
+	font-size: 12px;
+}
+
+.jstalktheme .msg .time
+{
+	font-size: 10px;
+}
+
+.jstalktheme .msg .mytalk
+{
+	float: right;
+	width: 100%;
+}
+
+.jstalktheme .msg .mytalk .time
+{
+	float: right;
+	bottom: 0;
+}
+
+.jstalktheme .msg .mytalk .a
+{
+	float: right;
+	position: relative;
+	min-height: 24px;
+	max-width: calc(100% - 64px);
+	left: 2px;
+	background-color: #ffec42;
+	border-radius: 3px;
+	z-index: 2;
+	padding: 0px 4px 0px 4px;
+	word-break: break-all;
+}
+
+.jstalktheme .msg .mytalk .b
+{
+	float: right;
+	position: relative;
+	width: 8px;
+	height: 22px;
+	background: url(./chat_balloon_yellow.right.png) no-repeat;
+	z-index: 1;
+}
+
+.jstalktheme .msg .othertalk
+{
+	float: left;
+	width: 100%;
+}
+
+.jstalktheme .msg .othertalk .profile_image
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	border-radius: 14px; 
+}
+
+.jstalktheme .msg .othertalk .box
+{
+	float: left;
+	width: calc(100% - 48px);
+}
+
+.jstalktheme .msg .othertalk .box .profile_name
+{
+	font-size: 12px;
+}
+
+.jstalktheme .msg .othertalk .box .a
+{
+	float: left;
+	position: relative;
+	width: 8px;
+	height: 22px;
+	background: url(./chat_balloon_white.left.png) no-repeat;
+	z-index: 1;
+}
+
+.jstalktheme .msg .othertalk .box .b
+{
+	float: left;
+	position: relative;
+	min-height: 24px;
+	max-width: calc(100% - 64px);
+	left: -2px;
+	background-color: #ffffff;
+	border-radius: 3px;
+	z-index: 2;
+	padding: 0px 4px 0px 4px;
+	word-break: break-all;
+}
+
+.jstalktheme .msg .othertalk .box .time
+{
+	float: left;
+}
+
+.jstalktheme .sendmsg
+{
+	
+}
+
+.jstalktheme .sendmsg .textarea
+{
+	float: left;
+	width: calc(100% - 68px);
+	height: 64px;
+	border-radius: 8px 0px 0px 8px;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 2px 2px 2px;
+	resize: none;
+}
+
+.jstalktheme .sendmsg .button
+{
+	float: right;
+	width: 62px;
+	height: 68px;
+	background-color: #ffec42;
+	border-radius: 0px 8px 8px 0px;
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+	text-align: center;
+	display: table;
+	cursor: pointer;
+}
+
+.jstalktheme .sendmsg .button p
+{
+  display: table-cell;
+  vertical-align: middle;
+}
+</style>
+<script>
+var test_type = 1;
+
+/*
+ * type
+ *      0 : mytalk
+ *      1 : othertalk
+ */
+function jstalktheme_addmsg(type, name, time, msg)
+{
+	var ocontainer = document.getElementById("jstalktheme_test");
+	var ocontainer_msg = ocontainer.getElementsByClassName("msg")[0];
+	
+	var onewmsg = document.createElement("div");
+	var onewblank = document.createElement("div");
+	
+	if(type)
+	{
+		onewmsg.className="othertalk";
+		onewmsg.innerHTML = 
+		"<div class=\"profile_image\" style=\"background: url(./profile_image.png) no-repeat;\">\n"+
+		"</div>\n"+
+		"<div class=\"box\">\n"+
+		"<div class=\"profile_name\">\n"+
+		name+"\n"+
+		"</div>\n"+
+		"<div class=\"a\">\n"+
+		"</div>\n"+
+		"<div class=\"b\">\n"+
+		msg+"\n"+
+		"</div>\n" +
+		"<div class=\"time\">\n"+
+		time+"\n"+
+		"</div>\n"+
+		"</div>\n";
+	}else{
+		onewmsg.className="mytalk";
+		onewmsg.innerHTML = 
+		"<div class=\"b\">\n"+
+		"</div>\n"+
+		"<div class=\"a\">\n"+
+		msg+"\n"+
+		"</div>\n"+
+		"<div class=\"time\">\n"+
+		time+"\n"+
+		"</div>\n" +
+		"";
+	}
+	
+	onewmsg.innerHTML +=
+    "<div class=\"clear\">\n"+
+    "</div>";
+	
+	onewblank.className="blank";
+	
+	ocontainer_msg.appendChild(onewmsg);
+	ocontainer_msg.appendChild(onewblank);
+	
+	ocontainer_msg.scrollTop = ocontainer_msg.scrollHeight;
+}
+
+
+function jstalktheme_testfunc(message=null, username=null, hours=null, minutes=null)
+{
+	var otxtmsg = document.getElementById("jstalktheme_testmsg");
+	
+	var d = new Date();
+
+	// test_type ^= 0x01;
+	if(username==null) username="아무개";
+	var ampm = (hours>12 ?  "PM" : "AM");
+	if(hours==null) hours = (d.getHours()>12 ? d.getHours()-12 : d.getHours());
+	else hours = (hours>12 ? hours-12 : hours);
+	if(minutes==null) minutes = d.getMinutes();
+	if(message == null) return;
+	// sendMessageToFirebase();
+	jstalktheme_addmsg(test_type, username, ampm+" "+ hours + ":" + minutes, message);
+}
+
+</script>
+<link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.css" />
+</head>
+
+<body>
+<div class="jstalktheme" id="jstalktheme_test" style="width: 320px; height: 480px;">
+
+<div class="msg">
+</div>
+
+<div class="sendmsg">
+    <textarea class="textarea" id="jstalktheme_testmsg" onkeypress="if(event.keyCode==13){sendMessageToFirebase(); this.value=''; return false; }else if(event.keyCode==10){ this.value+='\n'; }"></textarea>
+    <div class="button" onclick="sendMessageToFirebase()">
+ 	   <p>전송</p>
+    </div>
+    <div class="clear">
+    </div>
+</div>
+
+</div>
+<p>
+ 닉네임 : <p id="displayName"></p>
+</p>
+<div id="firebaseui-auth-container"></div>
+</body>
+</html>
+
+<script src="https://www.gstatic.com/firebasejs/4.8.2/firebase.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.firebase.com/libs/firebaseui/2.5.1/firebaseui.js"></script>
+<script>
+	var config = {
+		// TODO : Fill here
+	};
+	firebase.initializeApp(config);
+	// Initialize database
+	var database = firebase.database();
+
+	var chatRef = database.ref('chattings/');
+	chatRef.on('child_added', function(snapshot) {
+		var chat = snapshot.val();
+		console.log(chat);
+		if(chat!=null) jstalktheme_testfunc(chat.message, chat.username, chat.hours, chat.minutes);
+	});
+
+	var sendMessageToFirebase = function(){
+		var nickname = $('#displayName').text();
+		var d = new Date();
+		var hours = d.getHours();
+		minutes = d.getMinutes();
+		var otxtmsg = document.getElementById("jstalktheme_testmsg");
+
+		database.ref().child('chattings').push({
+			username: nickname,
+			message: otxtmsg.value.replace("\n","<br />\n"),
+			hours: hours,
+			minutes: minutes
+		});
+		
+	};
+	var ui = new firebaseui.auth.AuthUI(firebase.auth());
+	var user = null;
+	if(user==null){
+		ui.start('#firebaseui-auth-container', {
+		  signInOptions: [
+		    firebase.auth.EmailAuthProvider.PROVIDER_ID
+		  ],
+		  callbacks: {
+			  	signInSuccess: function(currentUser, credential, redirectUrl) {
+	            // Do something.
+	            // Return type determines whether we continue the redirect automatically
+	            // or whether we leave that to developer to handle.
+	            user = currentUser;
+	            console.log(user);
+	            $('#firebaseui-auth-container').html('');
+	            $('#displayName').text(user.displayName);
+	            return true;
+	          }
+      	},
+      	signInFlow: 'popup',
+		  // signInSuccessUrl : "/",
+		  tosUrl: "/",
+		  // Other config options...
+		});
+	}
+
+	$(document).ready(function(){
+
+	});
+
+
+</script>
+</html>

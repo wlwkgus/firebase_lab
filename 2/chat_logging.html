@@ -1,0 +1,33 @@
+<html>
+<head>
+</head>
+<body>
+<p> 2 </p>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	$(document).ready(function(){
+		var socket = io.connect("http://" + document.domain + ":" + location.port + "/chattings");
+		console.log(socket);
+
+		socket.on('chattings', function(msg){
+			console.log('chattings')
+			console.log(msg.data)
+		})
+
+		socket.on('response', function(msg){
+			console.log(msg);
+		});
+
+		socket.emit('request_chattings', {'data': 'hihi'});
+		// socket.emit('request', {'data': 'hihi'});
+
+		// socket.on('request', function(msg){
+		// 	console.log(msg);
+		// });
+
+		// console.log(r);
+	})
+</script>
+</html>

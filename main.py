@@ -35,12 +35,13 @@ socketio = SocketIO(app)
 ### chatting streamer
 def chatting_stream_handler(data):
 	print(data)
-	# emit("chattings", data)
+	# Flask needs request context.
+	with app.test_request_context('/chattings'):
+		socketio.emit("chattings", data, namespace='/chattings', broadcast=False)
+
 
 @app.route('/')
 def index():
-	chatting_stream = firebase_db.child("chattings").stream(chatting_stream_handler)
-	chatting_stream.start()
 	return render_template('chat.html')
 
 ### websocket section
@@ -53,8 +54,12 @@ def disconnect():
 	session.clear()
 	print("Disconnected")
 
-@socketio.on('request', namespace='/chattings')
-def request(data):
+@socketio.on('request_chattings', namespace='/chattings')
+def request_chattings(data):
+	chatting_stream = firebase_db.child("chattings").stream(chatting_stream_handler)
+
+@socketio.on('send_chatting', namespace='/chattings')
+def send_chatting(data):
 	# TODO : validate given data.
 	firebase_db.child('chattings').push({
 		'username': data['username'],
@@ -62,6 +67,13 @@ def request(data):
 		'hours': data['hours'],
 		'minutes': data['minutes']
 	})
+	# if '쌍욕' in data['message']:
+	# 	firebase_db.child('chattings').push({
+	# 		'username': '관리자',
+	# 		'message': '욕하지마세요 ^^',
+	# 		'hours': data['hours'],
+	# 		'minutes': data['minutes']
+	# 	})
 	emit("response", {'is_success': True})
 
 

@@ -39,8 +39,6 @@ def chatting_stream_handler(data):
 
 @app.route('/')
 def index():
-	chatting_stream = firebase_db.child("chattings").stream(chatting_stream_handler)
-	chatting_stream.start()
 	return render_template('chat.html')
 
 ### websocket section

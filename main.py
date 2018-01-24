@@ -6,7 +6,7 @@ from flask import session
 from flask_socketio import SocketIO, emit
 
 # pyrebase wrapper
-from firebase import firebase_db
+# from firebase import firebase_db
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -52,18 +52,6 @@ def connect():
 def disconnect():
 	session.clear()
 	print("Disconnected")
-
-@socketio.on('request', namespace='/chattings')
-def request(data):
-	# TODO : validate given data.
-	firebase_db.child('chattings').push({
-		'username': data['username'],
-		'message': data['message'],
-		'hours': data['hours'],
-		'minutes': data['minutes']
-	})
-	emit("response", {'is_success': True})
-
 
 if __name__ == '__main__':
     # app.run(debug=True, host='0.0.0.0', port=5000)
